@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %} Product {% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <!-- Product Image -->
+        <div class="col-md-6 mb-4">
+            <img src="/uploads/{{ showproduct.image }}" class="img-fluid rounded-lg shadow-lg" 
+                 style="width: 80%; height: 400px; object-fit: cover; border: 5px solid #ddd;" alt="Product Image">
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-5">
+            <h2 class="text-primary mb-3" style="font-weight: bold; font-size: 2rem;">{{ showproduct.name }}</h2>
+            <p class="card-text">{{ showproduct.desc }}</p>
+            <p class="card-text"><strong>Price:</strong> ${{ showproduct.price }}</p>
+            <p class="card-text"><strong>Average Rating:</strong> {{ average_rate }} / 5</p>
+            <a href="{% url 'reviews' pk=showproduct.id %}" class="btn btn-outline-primary btn-lg mt-3">Rate this product</a>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- Product Reviews -->
+    <h3 class="text-center mb-4" style="color: #333; font-weight: bold;">Customer Reviews</h3>
+
+    {% for review in reviews %}
+        <div class="card mb-3 shadow-lg border-light rounded" style="border-left: 5px solid #007bff;">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title" style="font-size: 1.2rem; font-weight: bold;">{{ review.user }} - {{ review.created_on|date:"M d, Y" }}</h5>
+                    <div class="d-flex align-items-center">
+                        <!-- Looping over the star range for filled stars -->
+                        {% for _ in review.star_range %}
+                            <span class="fa fa-star text-warning"></span>
+                        {% endfor %}
+                        
+                        <!-- Displaying empty stars if necessary -->
+                        {% for _ in 5|add:"-"|slice:":5-review.rating" %}
+                            <span class="fa fa-star text-muted"></span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <p class="mt-3" style="font-size: 1rem;">{{ review.comment }}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
